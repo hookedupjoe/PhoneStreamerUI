@@ -15,9 +15,9 @@
       <i class="icon podcast large green"></i>On the straming device, click <b>Streaming</b>.  Then enter a name, select the camera (giving permission) and <b>Start Streaming</b> to the desired host.
       <div class="ui pad5"></div>
       <div class="ui buttons">
-        <button appuse="tablinks" group="maintabs" item="hoststart" pageaction="showSubPage" class="ui button blue">Hosting</button>
+        <button pageaction="openHostUI" class="ui button blue">Hosting</button>
         <div class="or"></div>
-        <button appuse="tablinks" group="maintabs" item="streamstart" pageaction="showSubPage" class="ui button green">Streaming</button>
+        <button pageaction="openStreamUI" class="ui button green">Streaming</button>
       </div>
     </div>
   </div>
@@ -73,25 +73,27 @@
     </div>
     <div appuse="cards" group="streamtabs" item="live" class="hidden">
       <button class="ui button green large" pageaction="startStreaming">
-        Start Streaming
+        Start Streamings
       </button>
-      <button pageaction="restart" class="ui button basic">Cancel</button>
+      <button pageaction="closeVideo" class="ui button basic">Cancel</button>
       <br />
-      <video style="width:auto;height:auto;border:none;" autoplay="" muted="" playsInline="true" appuse="local-video"></video>
+      <video style="width:100%;padding:0;margin:3px;height:auto;border:none;" autoplay="" muted="" playsInline="true" appuse="local-video"></video>
     </div>
 
     <div appuse="cards" group="streamtabs" item="select" class="hidden">
 
       <div class="ui message">
-        <div class="ui larger">
-          <span class="bolder" pagespot="streamname">YOURNAME</span> select your camera.
+        <div class="ui larger pad5 mar3">
+          Device Name: <span class="bolder" pagespot="streamname"></span>
         </div>
 
         <div appuse="showcameras">
+          <button pageaction="setDeviceName" class="ui button basic">Change Name</button>
+          <button pageaction="restart" class="ui button basic">Cancel</button>
+          <div class="ui pad5"></div>
           <button class="ui button basic blue" pageaction="refreshVideoSources">
             Refresh Available Cameras
           </button>
-          <button pageaction="restart" class="ui button basic">Cancel</button>
           <div class="ui pad5"></div>
         </div>
 

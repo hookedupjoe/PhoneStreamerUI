@@ -68,10 +68,10 @@ ThisPage.subscribe('NewMediaSources', refreshMediaSourceLists);
 ThisPage.localVideo = ThisPage.getAppUse('local-video');
 ThisPage.localVideo.addEventListener("canplay",onLocalVideoPlay);
 
-navigator.mediaDevices.ondevicechange = function(){
-  console.log('we got devices');
-  refreshUI();
-};
+// navigator.mediaDevices.ondevicechange = function(){
+//   console.log('we got devices');
+//   refreshUI();
+// };
 
 initUI();
 //~_onFirstLoad~//~
@@ -99,6 +99,18 @@ initUI();
 ThisPage.common.role = '';
 ThisPage.mediaInfo = {};
 
+ThisPage.closeVideo = function(){
+  console.log('closevid',typeof(ThisPage.localVideo.srcObject))
+  if( ThisPage.localVideo.srcObject ){
+    var tmpTracks = ThisPage.localVideo.srcObject.getTracks();
+    tmpTracks.forEach(track => track.stop());
+  }
+  ThisPage.common.activeDeviceId = '';
+  gotoStage('streamstart');
+  refreshUI()
+}
+
+
 function onLocalVideoPlay(){
   //--- We are streaming
   console.log('onLocalVideoPlay');
@@ -109,12 +121,16 @@ function onLocalVideoPlay(){
 
 actions.setHostName = setHostName;
 function setHostName() {
-  ThisApp.input('Enter your host name', 'Host Name').then(updateHostName)
+  console.log( 'setHostName');
+  
+  setRole('host');
+  ThisApp.input('Enter your host name as it will be seen in the list (unique)', 'Host Display Name','Set Host Name', ThisPage.common.hostDispName || '').then(updateHostName)
 }
 
 actions.setDeviceName = setDeviceName;
 function setDeviceName() {
-  ThisApp.input('Enter your host name', 'Host Name').then(updateDeviceName)
+  setRole('stream');
+  ThisApp.input('Enter your devices stream name as it will be seen in the list (unique)', 'Stream Display Name', 'Set Stream Name', ThisPage.common.streamDispName || '').then(updateDeviceName)
 }
 
 function updateHostName(theName) {
@@ -122,9 +138,9 @@ function updateHostName(theName) {
     //--- there is no clearing allowed and a value is required, they hit escape when prompted
     return;
   }
-  ThisPage.common.displayName = theName;
   sessionStorage.setItem('hostdispname', theName);
-  setRole('host');
+  //ThisPage.common.displayName = theName;
+  ThisPage.common.hostDispName = theName;
   refreshUI();
 }
 
@@ -132,11 +148,13 @@ function updateDeviceName(theName) {
   if(!theName){
     return;
   }
-  ThisPage.common.displayName = theName;
+  //ThisPage.common.displayName = theName;
   sessionStorage.setItem('devicedispname', theName);
-  setRole('stream');
+  ThisPage.common.streamDispName = theName;
   refreshUI();
 }
+
+
 
 function gotoStage(theStage) {
   var tmpStage = theStage || 'start';
@@ -157,12 +175,41 @@ function restart() {
   refreshUI();
 }
 
+actions.streamPreviewCancel = streamPreviewCancel;
+function streamPreviewCancel() {
+  gotoStage('streamstart');
+  refreshUI();
+}
+
+actions.openStreamUI = openStreamUI;
+function openStreamUI() {
+  console.log( 'openStreamUI' );
+  setRole('stream');
+  gotoStage('streamstart');
+  refreshUI();
+}
+
+actions.openHostUI = openHostUI;
+function openHostUI() {
+  setRole('host');
+  gotoStage('hoststart');
+  refreshUI();
+}
+
 function initUI() {
   //--- Handle browser refresh
   var tmpHostname = sessionStorage.getItem('hostdispname');
   var tmpDevicename = sessionStorage.getItem('devicedispname');
-  var tmpLastRole = sessionStorage.getItem('lastrole');
+  var tmpLastRole = sessionStorage.getItem('lastrole') || ThisPage.common.role;
   
+  if( tmpDevicename ){
+    //ThisPage.loadSpot('streamname', tmpDevicename);
+    updateDeviceName(tmpDevicename)
+  }
+  if( tmpHostname ){
+    //ThisPage.loadSpot('hostname', tmpHostname);
+    updateHostName(tmpHostname)
+  }
   console.log('tmpHostname',tmpHostname);
   console.log('tmpDevicename',tmpDevicename);
   console.log('tmpLastRole',tmpLastRole);
@@ -170,13 +217,13 @@ function initUI() {
   if( (tmpLastRole) ){
     ThisPage.common.role = tmpLastRole;
     if( tmpLastRole == 'host' && (tmpHostname)){
-      ThisPage.common.displayName = tmpHostname;
+      //ThisPage.common.displayName = tmpHostname;
       gotoStage('hoststart')
     } else if( tmpLastRole == 'stream' && (tmpDevicename)){
-      ThisPage.common.displayName = tmpDevicename;
-      gotoStage('streamstart')
+      //ThisPage.common.displayName = tmpDevicename;
+      gotoStage('streamstart');
     }
-    console.log( 'ThisPage.common.displayName', ThisPage.common.displayName);
+//    console.log( 'ThisPage.common.displayName', ThisPage.common.displayName);
      
   }
 
@@ -184,31 +231,36 @@ function initUI() {
 }
 
 function refreshUI() {
-  var tmpName = ThisPage.common.displayName || '';
   var tmpIsActive = (ThisPage.common.role || '');
   var tmpIsHosting = ThisPage.common.role == 'host';
-  console.log('tmpName', tmpName);
   console.log('tmpIsHosting', tmpIsHosting);
   console.log('tmpIsActive', tmpIsActive);
+  var tmpName = '';
 
   if(!tmpIsActive){
     gotoStage('start');
   }
+  
 
   if (tmpIsHosting) {
+    tmpName = ThisPage.common.hostDispName || '';
     if (tmpIsActive) {
       ThisPage.loadSpot('hostname', tmpName);
+      if(tmpName){
       ThisPage.showSubPage({
         item: 'ready', group: 'hosttabs'
       });
+      }
     } else {
       ThisPage.showSubPage({
         item: 'start', group: 'hosttabs'
       });
     }
   } else {
+    tmpName = ThisPage.common.streamDispName || '';
+    ThisPage.loadSpot('streamname', tmpName);
     if (tmpIsActive) {
-      ThisPage.loadSpot('streamname', tmpName);
+      
       if (ThisPage.common.deviceId) {
         ThisPage.showSubPage({
           item: 'ready', group: 'streamtabs'
