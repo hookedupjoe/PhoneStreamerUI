@@ -1,11 +1,11 @@
 <div class="ui segment basic pad3 mar3">
-  
+
 
   <div appuse="cards" group="maintabs" item="start">
-<!--=========== START ========================================================================================-->
+    <!--=========== START ========================================================================================-->
     <div class="ui header blue center aligned">
-    Phone Streamer
-  </div>
+      Phone Streamer
+    </div>
     <div class="ui header  top attached">
       How it works
     </div>
@@ -25,7 +25,7 @@
 
 
   <div appuse="cards" group="maintabs" item="hoststart" class="hidden">
-<!--=========== HOST ========================================================================================-->
+    <!--=========== HOST ========================================================================================-->
 
     <div class="ui header top attached">
       <i class="icon blue computer"></i> Hosting a streamer
@@ -54,7 +54,7 @@
   </div>
 
   <div appuse="cards" group="maintabs" item="streamstart" class="hidden">
-<!--=========== STREAM ========================================================================================-->
+    <!--=========== STREAM ========================================================================================-->
     <div class="ui header top attached">
       <i class="icon green mobile"></i> Stream My Camera
     </div>
@@ -68,35 +68,46 @@
       </div>
     </div>
 
-      
+    <div appuse="cards" group="streamtabs" item="selectaudio" class="hidden">
+      <div pagespot="audio-sources"></div>
+    </div>
+    <div appuse="cards" group="streamtabs" item="live" class="hidden">
+      <button class="ui button green large" pageaction="startStreaming">
+        Start Streaming
+      </button>
+      <button pageaction="restart" class="ui button basic">Cancel</button>
+      <br />
+      <video style="width:auto;height:auto;border:none;" autoplay="" muted="" playsInline="true" appuse="local-video"></video>
+    </div>
+
     <div appuse="cards" group="streamtabs" item="select" class="hidden">
-      
+
       <div class="ui message">
         <div class="ui larger">
           <span class="bolder" pagespot="streamname">YOURNAME</span> select your camera.
         </div>
-        <br />
-        <button class="ui button green" pageaction="refreshVideoSources">
-          Show Available Cameras
-        </button>
-        <button pageaction="restart" class="ui button basic">Cancel</button>
+
+        <div appuse="showcameras">
+          <button class="ui button basic blue" pageaction="refreshVideoSources">
+            Refresh Available Cameras
+          </button>
+          <button pageaction="restart" class="ui button basic">Cancel</button>
+          <div class="ui pad5"></div>
+        </div>
+
+        <div pagespot="video-sources"></div>
+
       </div>
-      <div pagespot="video-sources"></div>
-      <div pagespot="audio-sources"></div>
+
+
     </div>
     <div appuse="cards" group="streamtabs" item="ready" class="hidden">
       <div class="ui message">
         <span class="bolder" pagespot="streamname">YOURNAME</span> you are ready to stream.
       </div>
     </div>
-
-
-
   </div>
 
-    <div appuse="cards" group="maintabs" item="live" class="NOThidden">
-        
-    </div>
-<video style="width:auto;height:auto;border:none;" autoplay="" muted="" playsInline="true" appuse="local-video"></video>
+
 
 </div>

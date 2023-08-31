@@ -66,7 +66,14 @@ ThisPage.subscribe('NewMediaSources', refreshMediaSourceLists);
 
 
 ThisPage.localVideo = ThisPage.getAppUse('local-video');
-ThisPage.localVideo.addEventListener("play",onLocalVideoPlay);
+ThisPage.localVideo.addEventListener("canplay",onLocalVideoPlay);
+
+navigator.mediaDevices.ondevicechange = function(){
+  console.log('we got devices');
+  refreshUI();
+};
+
+initUI();
 //~_onFirstLoad~//~
                 ThisPage._onActivate();
             }
@@ -94,7 +101,10 @@ ThisPage.mediaInfo = {};
 
 function onLocalVideoPlay(){
   //--- We are streaming
-  console.log('onLocalVideoPlay',onLocalVideoPlay);
+  console.log('onLocalVideoPlay');
+  ThisPage.showSubPage({
+      item: 'live', group: 'streamtabs'
+    });
 }
 
 actions.setHostName = setHostName;
@@ -114,7 +124,7 @@ function updateHostName(theName) {
   }
   ThisPage.common.displayName = theName;
   sessionStorage.setItem('hostdispname', theName);
-  ThisPage.common.role = 'host';
+  setRole('host');
   refreshUI();
 }
 
@@ -124,7 +134,7 @@ function updateDeviceName(theName) {
   }
   ThisPage.common.displayName = theName;
   sessionStorage.setItem('devicedispname', theName);
-  ThisPage.common.role = 'stream';
+  setRole('stream');
   refreshUI();
 }
 
@@ -135,17 +145,42 @@ function gotoStage(theStage) {
   });
 }
 
+function setRole(theRole){
+  ThisPage.common.role = theRole;
+  sessionStorage.setItem('lastrole', theRole);
+}
+
 actions.restart = restart;
 function restart() {
-  ThisPage.common.role = '';
+  gotoStage('start');
+  setRole('');
   refreshUI();
 }
 
 function initUI() {
   //--- Handle browser refresh
-  var tmpHostname = sessionStorage.setItem('hostdispname', theName);
-  var tmpDevicename = sessionStorage.setItem('devicedispname', theName);
+  var tmpHostname = sessionStorage.getItem('hostdispname');
+  var tmpDevicename = sessionStorage.getItem('devicedispname');
+  var tmpLastRole = sessionStorage.getItem('lastrole');
+  
+  console.log('tmpHostname',tmpHostname);
+  console.log('tmpDevicename',tmpDevicename);
+  console.log('tmpLastRole',tmpLastRole);
+  
+  if( (tmpLastRole) ){
+    ThisPage.common.role = tmpLastRole;
+    if( tmpLastRole == 'host' && (tmpHostname)){
+      ThisPage.common.displayName = tmpHostname;
+      gotoStage('hoststart')
+    } else if( tmpLastRole == 'stream' && (tmpDevicename)){
+      ThisPage.common.displayName = tmpDevicename;
+      gotoStage('streamstart')
+    }
+    console.log( 'ThisPage.common.displayName', ThisPage.common.displayName);
+     
+  }
 
+  refreshUI();
 }
 
 function refreshUI() {
@@ -187,7 +222,7 @@ function refreshUI() {
         
         if(!(ThisPage.common.initialPrompt)){
           ThisPage.common.initialPrompt = true;
-          //promptForCamera();
+          promptForCamera();
           refreshMediaSourcesFromSystem();
         }
         
@@ -351,7 +386,7 @@ function refreshMediaSourceLists() {
     refreshVideoMediaSources();
     ThisPage.loadSpot('audio-sources', '');
   }
-
+  
 }
 
 function refreshAudioMediaSources() {
@@ -427,9 +462,15 @@ function refreshVideoMediaSources() {
 
   if (tmpFoundOne) {
     ThisPage.loadSpot('video-sources', tmpHTML.join('\n'));
+    
+    
+    
   } else {
-    ThisPage.loadSpot('video-sources', '<div class="mar5"></div><div class="ui message orange mar5">Once you have given permission, press the <b>Show Available Cameras</b> button again.</div>');
-    promptForCamera();
+    ThisPage.loadSpot('video-sources', '<div class="mar5"></div><div class="ui message orange mar5">Once you have given permission, press the <b>Refresh Available Cameras</b> button again.</div>');
+    if( !(ThisPage.common.videoRetry) ){
+      ThisPage.common.videoRetry = true;
+      ThisApp.delay(5000).then(refreshVideoSources);
+    }
   }
 
 }
