@@ -62,7 +62,11 @@ thisPageSpecs.required = {
         ThisPage.initOnFirstLoad().then(
             function () {
                 //~_onFirstLoad//~
-ThisPage.subscribe('NewMediaSources', refreshMediaSourceLists)
+ThisPage.subscribe('NewMediaSources', refreshMediaSourceLists);
+
+
+ThisPage.localVideo = ThisPage.getAppUse('local-video');
+ThisPage.localVideo.addEventListener("play",onLocalVideoPlay);
 //~_onFirstLoad~//~
                 ThisPage._onActivate();
             }
@@ -87,6 +91,11 @@ ThisPage.subscribe('NewMediaSources', refreshMediaSourceLists)
 //=== UI CONTROL ==========================================================================
 ThisPage.common.role = '';
 ThisPage.mediaInfo = {};
+
+function onLocalVideoPlay(){
+  //--- We are streaming
+  console.log('onLocalVideoPlay',onLocalVideoPlay);
+}
 
 actions.setHostName = setHostName;
 function setHostName() {
