@@ -1,0 +1,102 @@
+<div class="ui segment basic pad3 mar3">
+  
+
+  <div appuse="cards" group="maintabs" item="start">
+<!--=========== START ========================================================================================-->
+    <div class="ui header blue center aligned">
+    Phone Streamer
+  </div>
+    <div class="ui header  top attached">
+      How it works
+    </div>
+    <div class="ui segment attached pad8">
+      <i class="icon computer large blue"></i>On your computer, click <b>Hosting</b>. Enter a host name and <b>Start Hosting</b>.
+      <div class="ui pad5"></div>
+      <i class="icon podcast large green"></i>On the straming device, click <b>Streaming</b>.  Then enter a name, select the camera (giving permission) and <b>Start Streaming</b> to the desired host.
+      <div class="ui pad5"></div>
+      <div class="ui buttons">
+        <button appuse="tablinks" group="maintabs" item="hoststart" pageaction="showSubPage" class="ui button blue">Hosting</button>
+        <div class="or"></div>
+        <button appuse="tablinks" group="maintabs" item="streamstart" pageaction="showSubPage" class="ui button green">Streaming</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div appuse="cards" group="maintabs" item="hoststart" class="hidden">
+<!--=========== HOST ========================================================================================-->
+
+    <div class="ui header top attached">
+      <i class="icon blue computer"></i> Hosting a streamer
+    </div>
+
+    <div appuse="cards" group="hosttabs" item="start">
+      <div class="ui segment bottom attached">
+        <button class="ui button blue" pageaction="setHostName">
+          Set Host Name
+        </button>
+        <button pageaction="restart" class="ui button basic">Cancel</button>
+      </div>
+    </div>
+    <div appuse="cards" group="hosttabs" item="ready" class="hidden">
+      <div class="ui message">
+        <div>
+          <span class="bolder" pagespot="hostname">YOURNAME</span> you are ready to host.
+        </div>
+        <div class="ui pad5"></div>
+        <button pageaction="setHostName" class="ui button basic compact">Change Name</button>
+        <button pageaction="restart" class="ui button basic compact">Cancel</button>
+        <div class="ui pad5"></div>
+        <button pageaction="startHosting" class="ui button blue">Start Hosting</button>
+      </div>
+    </div>
+  </div>
+
+  <div appuse="cards" group="maintabs" item="streamstart" class="hidden">
+<!--=========== STREAM ========================================================================================-->
+    <div class="ui header top attached">
+      <i class="icon green mobile"></i> Stream My Camera
+    </div>
+
+    <div appuse="cards" group="streamtabs" item="start">
+      <div class="ui segment bottom attached">
+        <button class="ui button green" pageaction="setDeviceName">
+          Set Device Name
+        </button>
+        <button pageaction="restart" class="ui button basic">Cancel</button>
+      </div>
+    </div>
+
+      
+    <div appuse="cards" group="streamtabs" item="select" class="hidden">
+      
+      <div class="ui message">
+        <div class="ui larger">
+          <span class="bolder" pagespot="streamname">YOURNAME</span> select your camera.
+        </div>
+        <br />
+        <button class="ui button green" pageaction="refreshVideoSources">
+          Show Available Cameras
+        </button>
+        <button pageaction="restart" class="ui button basic">Cancel</button>
+      </div>
+      <div pagespot="video-sources"></div>
+      <div pagespot="audio-sources"></div>
+    </div>
+    <div appuse="cards" group="streamtabs" item="ready" class="hidden">
+      <div class="ui message">
+        <span class="bolder" pagespot="streamname">YOURNAME</span> you are ready to stream.
+      </div>
+    </div>
+
+
+
+  </div>
+
+    <div appuse="cards" group="REM__maintabs" item="live" class="NOThidden">
+        <video style="float:right;rem____max-width:1px;rem____max-height:1px;height:auto;border:none;" autoplay="" playsInline="true" appuse="local-video"></video>
+    </div>
+
+
+</div>
