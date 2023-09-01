@@ -419,14 +419,14 @@ function refreshUI() {
 
 //=== MEDIA ==========================================================================
 
-ThisPage.getAppUse = function(theUse, theJQueryFlag) {
+ThisPage.getAppUse = function(theUse, the$Flag) {
   var tmpEl = ThisPage.getByAttr$({
     appuse: theUse
   });
   if (!(tmpEl && tmpEl.length > 0)) {
     return false;
   }
-  if (theJQueryFlag) {
+  if (the$Flag) {
     return tmpEl
   }
   return tmpEl.get(0);
@@ -478,6 +478,7 @@ function selectAudioSource(theParams, theTarget) {
       if (localSource) {
         localSource.srcObject = stream;
       }
+      console.log('adding tracks to peer for audio');
       stream.getTracks().forEach(track => ThisPage.activePeer.addTrack(track, stream));
     },
     connectError);
@@ -534,7 +535,8 @@ function selectVideoSource(theParams, theTarget) {
 
 
     //console.log("Adding tracks to remote peer", stream.getTracks())
-    //stream.getTracks().forEach(track => ThisPage.activePeer.addTrack(track, stream));
+    console.log('adding tracks to peer for video');
+    stream.getTracks().forEach(track => ThisPage.activePeer.addTrack(track, stream));
 
   },
     connectError);
