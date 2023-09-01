@@ -668,11 +668,11 @@ function refreshVideoMediaSources() {
 
 
 
-//=== WEBSOCKET ==========================================================================
+//=== WEBSOCKET and WEBRTC ==========================================================================
 
 
 ThisPage.stage = {
-  name: "MeetingCenter",
+  name: "PhoneStreamer",
   userid: sessionStorage.getItem('userid') || '',
   profile: {
     name: sessionStorage.getItem('displayname') || ''
@@ -722,11 +722,8 @@ function processMessage(theMsg) {
       if (ThisPage.stage.profile.name && ThisPage.stage.userid) {
         sendProfile();
       }
-      //ThisPage.wsclient.send({action:'profile',})
     }
 
-  } else if (tmpAction == 'chat') {
-    ThisPage.parts.welcome.gotChat(theMsg);
   } else if (tmpAction == 'meetingrequest') {
     onMeetingRequst(theMsg);
   } else if (tmpAction == 'people') {
@@ -748,7 +745,6 @@ function onPeopleList(theMsg) {
   if (theMsg && theMsg.people) {
     refreshPeople(theMsg.people);
   }
-
 }
 
 function updateQRCode(){
@@ -758,6 +754,7 @@ function updateQRCode(){
   console.log('tmpURL',tmpURL);
   new QRCode(tmpEl, tmpURL);
 }
+
 actions.refreshPeople = refreshPeople;
 function refreshPeople(thePeople) {
   ThisPage.stage.people = thePeople;
@@ -815,19 +812,11 @@ function onMeetingRequst(theMsg) {
                   action: 'meetingresponse', answer: self.activeAnswer, message: tmpReplyMsg
                 }))
 
-
-
               }
             )
-
-
-
           });
-
         }
       );
-
-
 
     } else {
       ThisPage.wsclient.send(JSON.stringify({
@@ -839,122 +828,6 @@ function onMeetingRequst(theMsg) {
   })
 
 }
-
-
-function DELETE____onMeetingRequst(theMsg) {
-  console.log('onMeetingRequst',
-    theMsg);
-
-  var tmpTitle = 'Meeting Request from ' + theMsg.fromname
-  var tmpMsg = 'Do you want to join a meeting with ' + theMsg.fromname + '?'
-  var self = ThisPage;
-
-  theReply = confirm(tmpMsg);
-
-
-  //---ToDo: Getting prompted twice
-  //tmpConfirm = ThisApp.confirm(tmpMsg, tmpTitle);
-  // if (!ThisPage.inMeetingRequest) {
-  //   ThisPage.inMeetingRequest = true;
-  //   tmpConfirm = ThisApp.confirm(tmpMsg, tmpTitle);
-  // } else {
-  //   console.log('in request, no confirm needed')
-  // }
-
-
-  //$.when(tmpConfirm).then(theReply => {
-  //  console.log('confirm:',theReply);
-  var tmpReplyMsg = {
-    from: theMsg.fromid,
-    reply: theReply
-  }
-
-
-  if (theReply) {
-    ThisPage.activePeer.setRemoteDescription(new RTCSessionDescription(theMsg.offer)).then(
-      function () {
-
-        ThisPage.activePeer.createAnswer().then(theAnswer => {
-          self.activeAnswer = theAnswer;
-          console.log('setLocalDescription theAnswer', theAnswer);
-
-          ThisPage.activePeer.setLocalDescription(new RTCSessionDescription(theAnswer)).then(
-            function () {
-              console.log('sending meetingresponse post confirm')
-              ThisPage.wsclient.send(JSON.stringify({
-                action: 'meetingresponse', answer: self.activeAnswer, message: tmpReplyMsg
-              }))
-            }
-          )
-        });
-      }
-    );
-  } else {
-    console.log('no response reply')
-    ThisPage.wsclient.send(JSON.stringify({
-      action: 'meetingresponse', message: tmpReplyMsg
-    }))
-  }
-  //})
-}
-
-function ORIGINAL_____________________onMeetingRequst(theMsg) {
-  console.log('onMeetingRequst', theMsg);
-
-  var tmpTitle = 'Meeting Request from ' + theMsg.fromname
-  var tmpMsg = 'Do you want to join a meeting with ' + theMsg.fromname + '?'
-  var self = ThisPage;
-
-  var tmpConfirm = true;
-
-  //---ToDo: Getting prompted twice
-  //tmpConfirm = ThisApp.confirm(tmpMsg, tmpTitle);
-  if (!ThisPage.inMeetingRequest) {
-    ThisPage.inMeetingRequest = true;
-    tmpConfirm = ThisApp.confirm(tmpMsg, tmpTitle);
-  } else {
-    console.log('in request, no confirm needed')
-  }
-
-
-  $.when(tmpConfirm).then(theReply => {
-    console.log('confirm:', theReply);
-    var tmpReplyMsg = {
-      from: theMsg.fromid,
-      reply: theReply
-    }
-
-
-    if (theReply) {
-      ThisPage.activePeer.setRemoteDescription(new RTCSessionDescription(theMsg.offer)).then(
-        function () {
-
-          ThisPage.activePeer.createAnswer().then(theAnswer => {
-            self.activeAnswer = theAnswer;
-            console.log('setLocalDescription theAnswer', theAnswer);
-
-            ThisPage.activePeer.setLocalDescription(new RTCSessionDescription(theAnswer)).then(
-              function () {
-                console.log('sending meetingresponse post confirm')
-                ThisPage.wsclient.send(JSON.stringify({
-                  action: 'meetingresponse', answer: self.activeAnswer, message: tmpReplyMsg
-                }))
-              }
-            )
-          });
-        }
-      );
-    } else {
-      console.log('no response reply')
-      ThisPage.wsclient.send(JSON.stringify({
-        action: 'meetingresponse', message: tmpReplyMsg
-      }))
-    }
-  })
-}
-
-
-
 
 function onMeetingResponse(theMsg) {
   var self = ThisPage;
@@ -970,7 +843,7 @@ function onMeetingResponse(theMsg) {
         //ToDo: Set this?
 
         if (!ThisPage.isAlreadyCalling) {
-          //--- Socket ID?
+          //--- Socket ID check?
 
           actions.requestMeeting({
             userid: theMsg.fromid
@@ -981,31 +854,12 @@ function onMeetingResponse(theMsg) {
         } else {
           console.log('we have connection', typeof(ThisPage.activePeer));
           ThisPage.inMeetingRequest = false;
-
-
-
-
-
         }
       });
-
-
-
   } else {
     alert('' + theMsg.fromname + ' did not accept the requst', 'Request Not Accepted', 'e')
   }
-  // var tmpTitle = 'Meeting Request from ' + theMsg.fromname
-  // var tmpMsg = 'Do you want to join a meeting with ' + theMsg.fromname + '?'
-  // ThisApp.confirm(tmpMsg, tmpTitle).then(theReply => {
-  //   var tmpReplyMsg = {
-  //     from: theMsg.fromid,
-  //     reply: theReply
-  //   }
-  //   ThisPage.wsclient.send(JSON.stringify({
-  //     action: 'meetingresponse', message: tmpReplyMsg
-  //   }))
 
-  // })
 
 }
 
@@ -1062,11 +916,6 @@ function requestMeeting(theParams, theTarget) {
 
 
 }
-
-
-
-
-//=== WEBRTC ==========================================================================
 //~YourPageCode~//~
 
 })(ActionAppCore, $);
