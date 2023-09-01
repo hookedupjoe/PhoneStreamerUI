@@ -13,6 +13,11 @@ This is a generic example of using browser media devices, winsockets and WebRTC 
 * Websockets used to setup up the WebRTC connections only
 * WebRTC used to create the peer to peer connection to stream video and/or audio
 
+### Quick Links To The Code
+[HTML Page with the UI](https://github.com/hookedupjoe/PhoneStreamerUI/blob/main/app/pages/Home/html/center.html)
+[Code that has the logic](https://github.com/hookedupjoe/PhoneStreamerUI/blob/main/app/pages/Home/index.js)
+
+### Notes
 Note: This does not use a TURN server as this is to stream from a phone to a computer on the same network.  That said, the 80% of the users, this should also allow streaming over the internet unless the firewalls are limited.  In that case this example wouldn't work, but it is a few additional configuration items in the JSON and a service away from working that way if so desire.  I just can't pay for someone to use this system TURNed on, hence it only supporting the 80% or so it works with, without needing that implemented. 
 
 This is the UI side of the project.  The server side is in another repo and both should be used with Mongino.
