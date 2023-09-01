@@ -251,8 +251,8 @@ function updateDeviceName(theName) {
   sessionStorage.setItem('devicedispname', theName);
   ThisPage.common.streamDispName = theName;
   ThisPage.stage.profile.name = theName;
-  console.log( 'sendProfile device', theName);
-  
+  console.log('sendProfile device', theName);
+
   sendProfile();
   refreshUI();
 }
@@ -337,16 +337,16 @@ function initUI() {
 function refreshUI() {
   var tmpIsActive = (ThisPage.common.role || '');
   var tmpIsHosting = ThisPage.common.role == 'host';
-  
+
   var tmpHostStatus = '';
-  if( ThisPage.common.targetHostFound ){
-    console.log('ThisPage.common.targetHostFound',ThisPage.common.targetHostFound);
+  if (ThisPage.common.targetHostFound) {
+    console.log('ThisPage.common.targetHostFound', ThisPage.common.targetHostFound);
     tmpHostStatus = `<div class="pad5 mar5" style="border:dashed 1px red;">
-          Host Ready
-        </div>`
+    Host Ready
+    </div>`
   }
 
-  ThisPage.loadSpot('host-status',tmpHostStatus);
+  ThisPage.loadSpot('host-status', tmpHostStatus);
 
   // console.log('tmpIsHosting', tmpIsHosting);
   // console.log('tmpIsActive', tmpIsActive);
@@ -423,10 +423,10 @@ ThisPage.getAppUse = function(theUse, theJQueryFlag) {
   var tmpEl = ThisPage.getByAttr$({
     appuse: theUse
   });
-  if(!(tmpEl && tmpEl.length > 0)){
+  if (!(tmpEl && tmpEl.length > 0)) {
     return false;
   }
-  if(theJQueryFlag){
+  if (theJQueryFlag) {
     return tmpEl
   }
   return tmpEl.get(0);
@@ -800,12 +800,12 @@ function onMeetingRequst(theMsg) {
 
             ThisPage.activePeer.setLocalDescription(new RTCSessionDescription(theAnswer)).then(
               function () {
-           
+
                 ThisPage.wsclient.send(JSON.stringify({
                   action: 'meetingresponse', answer: self.activeAnswer, message: tmpReplyMsg
                 }))
 
-                
+
 
               }
             )
@@ -832,7 +832,8 @@ function onMeetingRequst(theMsg) {
 
 
 function DELETE____onMeetingRequst(theMsg) {
-console.log( 'onMeetingRequst', theMsg);
+  console.log('onMeetingRequst',
+    theMsg);
 
   var tmpTitle = 'Meeting Request from ' + theMsg.fromname
   var tmpMsg = 'Do you want to join a meeting with ' + theMsg.fromname + '?'
@@ -841,54 +842,54 @@ console.log( 'onMeetingRequst', theMsg);
   theReply = confirm(tmpMsg);
 
 
-//--- ToDo: Getting prompted twice
-//tmpConfirm = ThisApp.confirm(tmpMsg, tmpTitle);
+  //---ToDo: Getting prompted twice
+  //tmpConfirm = ThisApp.confirm(tmpMsg, tmpTitle);
   // if (!ThisPage.inMeetingRequest) {
   //   ThisPage.inMeetingRequest = true;
   //   tmpConfirm = ThisApp.confirm(tmpMsg, tmpTitle);
   // } else {
   //   console.log('in request, no confirm needed')
   // }
-  
-  
+
+
   //$.when(tmpConfirm).then(theReply => {
   //  console.log('confirm:',theReply);
-    var tmpReplyMsg = {
-      from: theMsg.fromid,
-      reply: theReply
-    }
-    
-    
-    if (theReply) {
-      ThisPage.activePeer.setRemoteDescription(new RTCSessionDescription(theMsg.offer)).then(
-        function () {
+  var tmpReplyMsg = {
+    from: theMsg.fromid,
+    reply: theReply
+  }
 
-          ThisPage.activePeer.createAnswer().then(theAnswer => {
-            self.activeAnswer = theAnswer;
-console.log( 'setLocalDescription theAnswer', theAnswer);
 
-            ThisPage.activePeer.setLocalDescription(new RTCSessionDescription(theAnswer)).then(
-              function () {
-                console.log('sending meetingresponse post confirm')
-                ThisPage.wsclient.send(JSON.stringify({
-                  action: 'meetingresponse', answer: self.activeAnswer, message: tmpReplyMsg
-                }))
-              }
-            )
-          });
-        }
-      );
-    } else {
-      console.log('no response reply')
-      ThisPage.wsclient.send(JSON.stringify({
-        action: 'meetingresponse', message: tmpReplyMsg
-      }))
-    }
+  if (theReply) {
+    ThisPage.activePeer.setRemoteDescription(new RTCSessionDescription(theMsg.offer)).then(
+      function () {
+
+        ThisPage.activePeer.createAnswer().then(theAnswer => {
+          self.activeAnswer = theAnswer;
+          console.log('setLocalDescription theAnswer', theAnswer);
+
+          ThisPage.activePeer.setLocalDescription(new RTCSessionDescription(theAnswer)).then(
+            function () {
+              console.log('sending meetingresponse post confirm')
+              ThisPage.wsclient.send(JSON.stringify({
+                action: 'meetingresponse', answer: self.activeAnswer, message: tmpReplyMsg
+              }))
+            }
+          )
+        });
+      }
+    );
+  } else {
+    console.log('no response reply')
+    ThisPage.wsclient.send(JSON.stringify({
+      action: 'meetingresponse', message: tmpReplyMsg
+    }))
+  }
   //})
 }
 
 function ORIGINAL_____________________onMeetingRequst(theMsg) {
-console.log( 'onMeetingRequst', theMsg);
+  console.log('onMeetingRequst', theMsg);
 
   var tmpTitle = 'Meeting Request from ' + theMsg.fromname
   var tmpMsg = 'Do you want to join a meeting with ' + theMsg.fromname + '?'
@@ -896,31 +897,31 @@ console.log( 'onMeetingRequst', theMsg);
 
   var tmpConfirm = true;
 
-//--- ToDo: Getting prompted twice
-//tmpConfirm = ThisApp.confirm(tmpMsg, tmpTitle);
+  //---ToDo: Getting prompted twice
+  //tmpConfirm = ThisApp.confirm(tmpMsg, tmpTitle);
   if (!ThisPage.inMeetingRequest) {
     ThisPage.inMeetingRequest = true;
     tmpConfirm = ThisApp.confirm(tmpMsg, tmpTitle);
   } else {
     console.log('in request, no confirm needed')
   }
-  
-  
+
+
   $.when(tmpConfirm).then(theReply => {
-    console.log('confirm:',theReply);
+    console.log('confirm:', theReply);
     var tmpReplyMsg = {
       from: theMsg.fromid,
       reply: theReply
     }
-    
-    
+
+
     if (theReply) {
       ThisPage.activePeer.setRemoteDescription(new RTCSessionDescription(theMsg.offer)).then(
         function () {
 
           ThisPage.activePeer.createAnswer().then(theAnswer => {
             self.activeAnswer = theAnswer;
-console.log( 'setLocalDescription theAnswer', theAnswer);
+            console.log('setLocalDescription theAnswer', theAnswer);
 
             ThisPage.activePeer.setLocalDescription(new RTCSessionDescription(theAnswer)).then(
               function () {
@@ -971,9 +972,9 @@ function onMeetingResponse(theMsg) {
           console.log('we have connection', typeof(ThisPage.activePeer));
           ThisPage.inMeetingRequest = false;
 
-        
 
-          
+
+
 
         }
       });
@@ -1002,23 +1003,25 @@ function onMeetingResponse(theMsg) {
 
 actions.sendProfile = sendProfile;
 function sendProfile() {
-  if(!ThisPage.wsclient) return;
-  
+  if (!ThisPage.wsclient) return;
+
   ThisPage.wsclient.send(JSON.stringify({
     action: 'profile', profile: ThisPage.stage.profile, userid: ThisPage.stage.userid, id: ThisPage.stage.stageid
   }))
 }
 
 actions.startStreaming = startStreaming;
-function startStreaming(){
-  console.log( 'startStreaming',ThisPage.common.targetHost );
-  if( ThisPage.common.targetHost && ThisPage.common.targetHostFound){
+function startStreaming() {
+  console.log('startStreaming', ThisPage.common.targetHost);
+  if (ThisPage.common.targetHost && ThisPage.common.targetHostFound) {
     console.log('req2');
-    requestMeeting({userid:ThisPage.common.targetHost})
+    requestMeeting({
+      userid: ThisPage.common.targetHost
+    })
   } else {
     alert('we can not do that Dave', "Sad Face")
   }
-  
+
 }
 
 actions.requestMeeting = requestMeeting;
@@ -1036,14 +1039,13 @@ function requestMeeting(theParams, theTarget) {
 
   ThisPage.activePeer.createOffer().then(theOffer => {
     self.activeOffer = theOffer;
-    ThisPage.activePeer.setLocalDescription(new RTCSessionDescription(self.activeOffer)).then();
-
-    ThisPage.wsclient.send(JSON.stringify({
-      offer: self.activeOffer,
-      action: 'meeting', to: tmpParams.userid
-    }))
-
-
+    ThisPage.activePeer.setLocalDescription(new RTCSessionDescription(self.activeOffer)).then(
+      function() {
+        ThisPage.wsclient.send(JSON.stringify({
+          offer: self.activeOffer,
+          action: 'meeting', to: tmpParams.userid
+        }))
+      });
   });
 
 
