@@ -751,6 +751,13 @@ function onPeopleList(theMsg) {
 
 }
 
+function updateQRCode(){
+  ThisPageNow.loadSpot('qr-code-host','<div class="ui header small blue mar10 pad5">Quick Access QR Code</div>');
+  var tmpEl = ThisPageNow.getSpot('qr-code-host').get(0);
+  var tmpURL = location.href + '?host=' + ThisPage.stage.userid;
+  console.log('tmpURL',tmpURL);
+  new QRCode(tmpEl, tmpURL);
+}
 actions.refreshPeople = refreshPeople;
 function refreshPeople(thePeople) {
   ThisPage.stage.people = thePeople;
@@ -763,6 +770,7 @@ function refreshPeople(thePeople) {
     ThisPage.showSubPage({
       item: 'hosting', group: 'hosttabs'
     });
+    updateQRCode();
   } else {
     ThisPage.stage.hostingActive = false;
     ThisPage.showSubPage({
