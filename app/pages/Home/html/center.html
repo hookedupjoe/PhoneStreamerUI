@@ -10,15 +10,12 @@
       How it works
     </div>
     <div class="ui segment attached pad8">
-      <i class="icon computer large blue"></i>On your computer, click <b>Hosting</b>. Enter a host name and <b>Start Hosting</b>.
+      <i class="icon computer large blue"></i>On your computer, click <b>Host Streamer</b>. Enter a display name and <b>Start Hosting</b>.
       <div class="ui pad5"></div>
-      <i class="icon podcast large green"></i>On the straming device, click <b>Streaming</b>.  Then enter a name, select the camera (giving permission) and <b>Start Streaming</b> to the desired host.
+      <i class="icon podcast large green"></i>On the straming device, enter a device name, select the camera and find the host to connect to. Click the <b>Connect</b> button to stream to the host peer to peer.
       <div class="ui pad5"></div>
-      <div class="ui buttons">
-        <button pageaction="openHostUI" class="ui button blue">Hosting</button>
-        <div class="or"></div>
-        <button pageaction="openStreamUI" class="ui button green">Streaming</button>
-      </div>
+        <button pageaction="openHostUI" class="ui button blue">Host Streamer</button>
+        <button pageaction="openStreamUI" class="ui button green">Setup Stream Device</button>
     </div>
   </div>
 
@@ -51,13 +48,29 @@
         <button pageaction="startHosting" class="ui button blue">Start Hosting</button>
       </div>
     </div>
+    <div appuse="cards" group="hosttabs" item="hosting" class="hidden">
+      <div class="ui message">
+        <div>
+          <span class="bolder" pagespot="hostname">YOURNAME</span> you are hosting.
+        </div>
+        <div class="ui pad5"></div>
+        <button pageaction="restart" class="ui button basic compact">Cancel</button>
+      </div>
+    </div>
   </div>
 
   <div appuse="cards" group="maintabs" item="streamstart" class="hidden">
     <!--=========== STREAM ========================================================================================-->
     <div class="ui header top attached">
-      <i class="icon green mobile"></i> Stream My Camera
+      <div class="toleft">
+        <i class="icon green mobile"></i> Stream Device
+      </div>
+      <div class="toright" pagespot="host-status">
+        
+      </div>
+      <div class="clearboth"></div>
     </div>
+      
 
     <div appuse="cards" group="streamtabs" item="start">
       <div class="ui segment bottom attached">
@@ -72,12 +85,12 @@
       <div pagespot="audio-sources"></div>
     </div>
     <div appuse="cards" group="streamtabs" item="live" class="hidden">
-      <button class="ui button green large" pageaction="startStreaming">
-        Start Streamings
+      <button appuse="startStreaming" class="ui button green large" pageaction="startStreaming">
+        Start Streaming
       </button>
       <button pageaction="closeVideo" class="ui button basic">Cancel</button>
       <br />
-      <video style="width:100%;padding:0;margin:3px;height:auto;border:none;" autoplay="" muted="" playsInline="true" appuse="local-video"></video>
+      <video style="max-width:380px;width:100%;padding:0;margin:3px;height:auto;border:none;" autoplay="" muted="" playsInline="true" appuse="local-video"></video>
     </div>
 
     <div appuse="cards" group="streamtabs" item="select" class="hidden">
@@ -113,3 +126,6 @@
 
 
 </div>
+
+
+<canvas style="width:99%;height:auto;background-repeat: no-repeat;" appuse="remote-canvas" width="640" height="480"></canvas>
