@@ -68,14 +68,6 @@ ThisPageNow = ThisPage;
 
 function setMeetingStatus(theStatus){
   var tmpIsOpen = ( theStatus == 'open');
-  console.log( 'tmpIsOpen',tmpIsOpen );
-  
-  // if( tmpIsOpen ){
-  //   ThisPage.liveIndicator.removeClass('hidden')
-  // } else {
-  //   ThisPage.liveIndicator.addClass('hidden')
-  // }
-  
 }
 
 
@@ -107,7 +99,6 @@ ThisPage.ctxRemote = ThisPage.remoteCanvas.getContext("2d",{willReadFrequently: 
 ThisPage.activePeer.ontrack = function({ streams: [stream] }) {
   const remoteVideo = ThisPage.getByAttr$({appuse: 'remote-video'}).get(0);
   if (remoteVideo) {
-    console.log('remoteVideo set', stream.getTracks());
     remoteVideo.srcObject = stream;
   }
 };
@@ -116,19 +107,15 @@ function handleSendChannelStatusChange(event) {
   if( event && event.type ){
     setMeetingStatus(event.type);
   } else {
-    console.log('unknown status change event from data channel',event)
+    console.warn('unknown status change event from data channel',event)
   }
   
-  // if (sendChannel) {
-  //   var state = sendChannel.readyState;
-  //   console.log('handleSendChannelStatusChange state',state);
-  // }
 }
 
 function onChannelMessage(event) {
   if(!event && event.data) return;
   
-  console.log(''+event.data)
+  console.log('We got event data:' + event.data)
  
 }
 
@@ -142,23 +129,12 @@ function onChannelMessage(event) {
 ThisPage.common.params = new URLSearchParams(document.location.search);
 ThisPage.common.targetHost = ThisPage.common.params.get('host') || '';
 
-console.log( 'Looking for: ',ThisPage.common.targetHost );
-
-
 ThisPage.subscribe('NewMediaSources', refreshMediaSourceLists);
 
 
 ThisPage.localVideo = ThisPage.getAppUse('local-video');
 ThisPage.localVideo.addEventListener("canplay",onLocalVideoPlay);
 
-
-
-
-
-// navigator.mediaDevices.ondevicechange = function(){
-//   console.log('we got devices');
-//   refreshUI();
-// };
 
 initUI();
 
@@ -189,7 +165,6 @@ ThisPage.common.role = '';
 ThisPage.mediaInfo = {};
 
 ThisPage.closeVideo = function() {
-  console.log('closevid', typeof(ThisPage.localVideo.srcObject))
   if (ThisPage.localVideo.srcObject) {
     var tmpTracks = ThisPage.localVideo.srcObject.getTracks();
     tmpTracks.forEach(track => track.stop());
@@ -203,7 +178,6 @@ ThisPage.closeVideo = function() {
 
 function onLocalVideoPlay() {
   //--- We are streaming
-  console.log('onLocalVideoPlay');
   ThisPage.showSubPage({
     item: 'live', group: 'streamtabs'
   });
@@ -212,14 +186,11 @@ function onLocalVideoPlay() {
 
 actions.startHosting = startHosting;
 function startHosting() {
-  console.log('startHosting');
   sendProfile();
 }
 
 actions.setHostName = setHostName;
 function setHostName() {
-  console.log('setHostName');
-
   setRole('host');
   ThisApp.input('Enter your host name as it will be seen in the list (unique)', 'Host Display Name', 'Set Host Name', ThisPage.common.hostDispName || '').then(updateHostName);
 }
@@ -251,7 +222,6 @@ function updateDeviceName(theName) {
   sessionStorage.setItem('devicedispname', theName);
   ThisPage.common.streamDispName = theName;
   ThisPage.stage.profile.name = theName;
-  console.log('sendProfile device', theName);
 
   sendProfile();
   refreshUI();
@@ -287,7 +257,6 @@ function streamPreviewCancel() {
 
 actions.openStreamUI = openStreamUI;
 function openStreamUI() {
-  console.log('openStreamUI');
   setRole('stream');
   gotoStage('streamstart');
   refreshUI();
@@ -314,9 +283,6 @@ function initUI() {
     //ThisPage.loadSpot('hostname', tmpHostname);
     updateHostName(tmpHostname);
   }
-  console.log('tmpHostname', tmpHostname);
-  console.log('tmpDevicename', tmpDevicename);
-  console.log('tmpLastRole', tmpLastRole);
 
   if ((tmpLastRole)) {
     ThisPage.common.role = tmpLastRole;
@@ -327,7 +293,6 @@ function initUI() {
       //ThisPage.common.displayName = tmpDevicename;
       gotoStage('streamstart');
     }
-    //    console.log( 'ThisPage.common.displayName', ThisPage.common.displayName);
 
   }
 
@@ -340,7 +305,6 @@ function refreshUI() {
 
   var tmpHostStatus = '';
   if (ThisPage.common.targetHostFound) {
-    console.log('ThisPage.common.targetHostFound', ThisPage.common.targetHostFound);
     tmpHostStatus = `<div class="pad5 mar5" style="border:dashed 1px red;">
     Host Ready
     </div>`
@@ -348,8 +312,6 @@ function refreshUI() {
 
   ThisPage.loadSpot('host-status', tmpHostStatus);
 
-  // console.log('tmpIsHosting', tmpIsHosting);
-  // console.log('tmpIsActive', tmpIsActive);
   var tmpName = '';
 
   if (!tmpIsActive) {
@@ -478,7 +440,6 @@ function selectAudioSource(theParams, theTarget) {
       if (localSource) {
         localSource.srcObject = stream;
       }
-      console.log('adding tracks to peer for audio');
       stream.getTracks().forEach(track => ThisPage.activePeer.addTrack(track, stream));
     },
     connectError);
@@ -508,7 +469,6 @@ function selectVideoSource(theParams, theTarget) {
   navigator.mediaDevices.getUserMedia(tmpConstraints).then(function(stream) {
 
     const localVideo = ThisPage.getAppUse('local-video');
-    console.log('got video stream', typeof(stream))
 
     if (localVideo) {
       localVideo.srcObject = stream;
@@ -534,8 +494,6 @@ function selectVideoSource(theParams, theTarget) {
 
 
 
-    //console.log("Adding tracks to remote peer", stream.getTracks())
-    console.log('adding tracks to peer for video');
     stream.getTracks().forEach(track => ThisPage.activePeer.addTrack(track, stream));
 
   },
@@ -624,8 +582,7 @@ function refreshVideoMediaSources() {
 
 
   var tmpDevices = ThisPage.mediaInfo.devices;
-  console.log('ThisPage.mediaInfo.devices', ThisPage.mediaInfo.devices);
-
+  
   var tmpHTML = ['<div class="ui vertical menu fluid"><div class="ui header blue medium">Select a camera to stream</div>'];
 
   var tmpFoundOne = false;
@@ -731,7 +688,7 @@ function processMessage(theMsg) {
   } else if (tmpAction == 'meetingresponse') {
     onMeetingResponse(theMsg);
   } else {
-    console.log('unknown message', theMsg);
+    console.error('unknown message', theMsg);
   }
   if (theMsg.people) {
     refreshPeople(theMsg.people);
@@ -751,7 +708,6 @@ function updateQRCode(){
   ThisPageNow.loadSpot('qr-code-host','<div class="ui header small blue mar10 pad5">Quick Access QR Code</div>');
   var tmpEl = ThisPageNow.getSpot('qr-code-host').get(0);
   var tmpURL = location.href + '?host=' + ThisPage.stage.userid;
-  console.log('tmpURL',tmpURL);
   new QRCode(tmpEl, tmpURL);
 }
 
@@ -762,7 +718,6 @@ function refreshPeople(thePeople) {
   ThisPage.common.targetHostFound = (ThisPage.common.targetHost && ThisPage.stage.people[ThisPage.common.targetHost]);
 
   if (ThisPage.stage.people && ThisPage.stage.people[ThisPage.stage.userid]) {
-    console.log('refreshPeople', ThisPage.stage.people, ThisPage.stage.people[ThisPage.stage.userid]);
     ThisPage.stage.hostingActive = true;
     ThisPage.showSubPage({
       item: 'hosting', group: 'hosttabs'
@@ -776,7 +731,6 @@ function refreshPeople(thePeople) {
 
   }
 
-  console.log('ThisPage.stage.people', ThisPage.stage.people);
   refreshUI();
 }
 
@@ -849,10 +803,8 @@ function onMeetingResponse(theMsg) {
             userid: theMsg.fromid
           })
           ThisPage.isAlreadyCalling = true;
-          console.log('Calling back', typeof(ThisPage.activePeer));
 
         } else {
-          console.log('we have connection', typeof(ThisPage.activePeer));
           ThisPage.inMeetingRequest = false;
         }
       });
@@ -876,9 +828,7 @@ function sendProfile() {
 
 actions.startStreaming = startStreaming;
 function startStreaming() {
-  console.log('startStreaming', ThisPage.common.targetHost);
   if (ThisPage.common.targetHost && ThisPage.common.targetHostFound) {
-    console.log('req2');
     requestMeeting({
       userid: ThisPage.common.targetHost
     })
