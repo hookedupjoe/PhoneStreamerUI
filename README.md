@@ -17,8 +17,8 @@ Note: This does not use a TURN server as this is to stream from a phone to a com
 
 This is the UI side of the project.  The server side is in another repo and both should be used with Mongino.
 
-[Server Side Repo](https://github.com/hookedupjoe/PhoneStreamerServer)
-[mongino repo](https://github.com/hookedupjoe/mongino)
+* [Server Side Repo](https://github.com/hookedupjoe/PhoneStreamerServer)
+* [mongino repo](https://github.com/hookedupjoe/mongino)
 
 ### Usage
 This is designed to be used with the Mongino server development, hosting and deployment environment.  
