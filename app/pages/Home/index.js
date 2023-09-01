@@ -186,9 +186,7 @@ function onLocalVideoPlay() {
 
 actions.cancelHosting = cancelHosting;
 function cancelHosting() {
-  ThisPage.showSubPage({
-    item: 'ready', group: 'hosttabs'
-  });
+  restart();
 }
 actions.startHosting = startHosting;
 function startHosting() {
@@ -355,8 +353,12 @@ function refreshUI() {
     tmpName = ThisPage.common.streamDispName || '';
     ThisPage.loadSpot('streamname', tmpName);
     if (tmpIsActive) {
-
-      if (ThisPage.common.deviceId) {
+      if( !(tmpName) ){
+        ThisPage.showSubPage({
+          item: 'start', group: 'hosttabs'
+        });
+      } else {
+         if (ThisPage.common.deviceId) {
         ThisPage.showSubPage({
           item: 'ready', group: 'streamtabs'
         });
@@ -376,6 +378,10 @@ function refreshUI() {
 
 
       }
+
+      }
+
+     
     } else {
       ThisPage.showSubPage({
         item: 'start', group: 'streamtabs'
