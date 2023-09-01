@@ -64,13 +64,7 @@ thisPageSpecs.required = {
                 //~_onFirstLoad//~
 ThisPageNow = ThisPage;
 
-ThisPage.activePeer = new RTCPeerConnection({
-  iceServers: [
-      {
-        urls: "stun:stun.relay.metered.ca:80",
-      }
-  ],
-});
+
 
 function setMeetingStatus(theStatus){
   var tmpIsOpen = ( theStatus == 'open');
@@ -85,6 +79,13 @@ function setMeetingStatus(theStatus){
 }
 
 
+ThisPage.activePeer = new RTCPeerConnection({
+  iceServers: [
+      {
+        urls: "stun:stun.relay.metered.ca:80",
+      }
+  ],
+});
 
 ThisPage.activePeer.addEventListener('datachannel', event => {
   ThisPage.activeDataChannel = event.channel;
@@ -99,6 +100,17 @@ ThisPage.activeDataChannel = ThisPage.activePeer.createDataChannel("sendChannel"
 ThisPage.activeDataChannel.onopen = handleSendChannelStatusChange;
 ThisPage.activeDataChannel.onclose = handleSendChannelStatusChange;
 ThisPage.activeDataChannel.onmessage = onChannelMessage
+
+ThisPage.remoteCanvas = ThisPage.getAppUse('remote-canvas');
+ThisPage.ctxRemote = ThisPage.remoteCanvas.getContext("2d",{willReadFrequently: true});
+
+ThisPage.activePeer.ontrack = function({ streams: [stream] }) {
+  const remoteVideo = ThisPage.getByAttr$({appuse: 'remote-video'}).get(0);
+  if (remoteVideo) {
+    console.log('remoteVideo set', stream.getTracks());
+    remoteVideo.srcObject = stream;
+  }
+};
 
 function handleSendChannelStatusChange(event) {
   if( event && event.type ){
@@ -141,16 +153,6 @@ ThisPage.localVideo.addEventListener("canplay",onLocalVideoPlay);
 
 
 
-ThisPage.remoteCanvas = ThisPage.getAppUse('remote-canvas');
-ThisPage.ctxRemote = ThisPage.remoteCanvas.getContext("2d",{willReadFrequently: true});
-
-ThisPage.activePeer.ontrack = function({ streams: [stream] }) {
-  const remoteVideo = ThisPage.getByAttr$({appuse: 'remote-video'}).get(0);
-  if (remoteVideo) {
-    console.log('remoteVideo set', stream.getTracks());
-    remoteVideo.srcObject = stream;
-  }
-};
 
 
 // navigator.mediaDevices.ondevicechange = function(){
@@ -773,7 +775,6 @@ function refreshPeople(thePeople) {
 
 
 function onMeetingRequst(theMsg) {
-console.log( 'onMeetingRequst', theMsg);
 
   var tmpTitle = 'Meeting Request from ' + theMsg.fromname
   var tmpMsg = 'Do you want to join a meeting with ' + theMsg.fromname + '?'
@@ -790,6 +791,72 @@ console.log( 'onMeetingRequst', theMsg);
       from: theMsg.fromid,
       reply: theReply
     }
+    if (theReply) {
+      ThisPage.activePeer.setRemoteDescription(new RTCSessionDescription(theMsg.offer)).then(
+        function () {
+
+          ThisPage.activePeer.createAnswer().then(theAnswer => {
+            self.activeAnswer = theAnswer;
+
+            ThisPage.activePeer.setLocalDescription(new RTCSessionDescription(theAnswer)).then(
+              function () {
+           
+                ThisPage.wsclient.send(JSON.stringify({
+                  action: 'meetingresponse', answer: self.activeAnswer, message: tmpReplyMsg
+                }))
+
+                
+
+              }
+            )
+
+
+
+          });
+
+        }
+      );
+
+
+
+    } else {
+      ThisPage.wsclient.send(JSON.stringify({
+        action: 'meetingresponse', message: tmpReplyMsg
+      }))
+    }
+
+
+  })
+
+}
+
+
+function DELETE____onMeetingRequst(theMsg) {
+console.log( 'onMeetingRequst', theMsg);
+
+  var tmpTitle = 'Meeting Request from ' + theMsg.fromname
+  var tmpMsg = 'Do you want to join a meeting with ' + theMsg.fromname + '?'
+  var self = ThisPage;
+
+  theReply = confirm(tmpMsg);
+
+
+//--- ToDo: Getting prompted twice
+//tmpConfirm = ThisApp.confirm(tmpMsg, tmpTitle);
+  // if (!ThisPage.inMeetingRequest) {
+  //   ThisPage.inMeetingRequest = true;
+  //   tmpConfirm = ThisApp.confirm(tmpMsg, tmpTitle);
+  // } else {
+  //   console.log('in request, no confirm needed')
+  // }
+  
+  
+  //$.when(tmpConfirm).then(theReply => {
+  //  console.log('confirm:',theReply);
+    var tmpReplyMsg = {
+      from: theMsg.fromid,
+      reply: theReply
+    }
     
     
     if (theReply) {
@@ -802,6 +869,62 @@ console.log( 'setLocalDescription theAnswer', theAnswer);
 
             ThisPage.activePeer.setLocalDescription(new RTCSessionDescription(theAnswer)).then(
               function () {
+                console.log('sending meetingresponse post confirm')
+                ThisPage.wsclient.send(JSON.stringify({
+                  action: 'meetingresponse', answer: self.activeAnswer, message: tmpReplyMsg
+                }))
+              }
+            )
+          });
+        }
+      );
+    } else {
+      console.log('no response reply')
+      ThisPage.wsclient.send(JSON.stringify({
+        action: 'meetingresponse', message: tmpReplyMsg
+      }))
+    }
+  //})
+}
+
+function ORIGINAL_____________________onMeetingRequst(theMsg) {
+console.log( 'onMeetingRequst', theMsg);
+
+  var tmpTitle = 'Meeting Request from ' + theMsg.fromname
+  var tmpMsg = 'Do you want to join a meeting with ' + theMsg.fromname + '?'
+  var self = ThisPage;
+
+  var tmpConfirm = true;
+
+//--- ToDo: Getting prompted twice
+//tmpConfirm = ThisApp.confirm(tmpMsg, tmpTitle);
+  if (!ThisPage.inMeetingRequest) {
+    ThisPage.inMeetingRequest = true;
+    tmpConfirm = ThisApp.confirm(tmpMsg, tmpTitle);
+  } else {
+    console.log('in request, no confirm needed')
+  }
+  
+  
+  $.when(tmpConfirm).then(theReply => {
+    console.log('confirm:',theReply);
+    var tmpReplyMsg = {
+      from: theMsg.fromid,
+      reply: theReply
+    }
+    
+    
+    if (theReply) {
+      ThisPage.activePeer.setRemoteDescription(new RTCSessionDescription(theMsg.offer)).then(
+        function () {
+
+          ThisPage.activePeer.createAnswer().then(theAnswer => {
+            self.activeAnswer = theAnswer;
+console.log( 'setLocalDescription theAnswer', theAnswer);
+
+            ThisPage.activePeer.setLocalDescription(new RTCSessionDescription(theAnswer)).then(
+              function () {
+                console.log('sending meetingresponse post confirm')
                 ThisPage.wsclient.send(JSON.stringify({
                   action: 'meetingresponse', answer: self.activeAnswer, message: tmpReplyMsg
                 }))
@@ -820,10 +943,11 @@ console.log( 'setLocalDescription theAnswer', theAnswer);
 }
 
 
+
+
 function onMeetingResponse(theMsg) {
   var self = ThisPage;
-console.log( 'onMeetingResponse', theMsg);
- 
+
 
   if (theMsg && theMsg.message && theMsg.message.reply === true) {
 
@@ -836,7 +960,7 @@ console.log( 'onMeetingResponse', theMsg);
 
         if (!ThisPage.isAlreadyCalling) {
           //--- Socket ID?
-console.log('req1');
+
           actions.requestMeeting({
             userid: theMsg.fromid
           })
@@ -847,9 +971,9 @@ console.log('req1');
           console.log('we have connection', typeof(ThisPage.activePeer));
           ThisPage.inMeetingRequest = false;
 
+        
 
-
-
+          
 
         }
       });
@@ -900,13 +1024,11 @@ function startStreaming(){
 actions.requestMeeting = requestMeeting;
 function requestMeeting(theParams, theTarget) {
   //ThisPage.isAlreadyCalling = true;
-  
   var tmpParams = ThisApp.getActionParams(theParams, theTarget, ['userid']);
   if (!(tmpParams.userid)) {
     alert('No person selected', 'Select a person', 'e');
     return;
   }
-  console.log( 'requestMeeting', tmpParams.userid);
 
 
   //--- Quick test for one peer to peer
@@ -914,23 +1036,12 @@ function requestMeeting(theParams, theTarget) {
 
   ThisPage.activePeer.createOffer().then(theOffer => {
     self.activeOffer = theOffer;
-    console.log('mtg req local desc')
-    ThisPage.activePeer.setLocalDescription(new RTCSessionDescription(self.activeOffer)).then(
-      function(){
-          ThisPage.wsclient.send(JSON.stringify({
-            offer: self.activeOffer,
-            action: 'meeting', to: tmpParams.userid
-          }))
-      }  
-    );
+    ThisPage.activePeer.setLocalDescription(new RTCSessionDescription(self.activeOffer)).then();
 
-  //was .. do both for testing
-  /**/
-  ThisPage.wsclient.send(JSON.stringify({
+    ThisPage.wsclient.send(JSON.stringify({
       offer: self.activeOffer,
       action: 'meeting', to: tmpParams.userid
     }))
-    
 
 
   });
