@@ -184,6 +184,12 @@ function onLocalVideoPlay() {
 }
 
 
+actions.cancelHosting = cancelHosting;
+function cancelHosting() {
+  ThisPage.showSubPage({
+    item: 'ready', group: 'hosttabs'
+  });
+}
 actions.startHosting = startHosting;
 function startHosting() {
   sendProfile();
@@ -335,6 +341,10 @@ function refreshUI() {
           });
 
         }
+      } else {
+        ThisPage.showSubPage({
+          item: 'start', group: 'hosttabs'
+        });
       }
     } else {
       ThisPage.showSubPage({
