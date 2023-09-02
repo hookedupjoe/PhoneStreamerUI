@@ -728,15 +728,12 @@
       var tmpURL = ActionAppCore.util.getWebsocketURL('actions', 'ws-main');
       ThisPage.wsclient = new WebSocket(tmpURL);
       ThisPage.wsclient.onmessage = function (event) {
-        console.log('onmessage',event)
         var tmpData = '';
         if (typeof (event.data == 'string')) {
           tmpData = event.data.trim();
           try {
             if (tmpData.startsWith('{')) {
               tmpData = JSON.parse(tmpData);
-              console.log('tmpData',tmpData)
-
               processMessage(tmpData);
             }
           } catch (error) {
