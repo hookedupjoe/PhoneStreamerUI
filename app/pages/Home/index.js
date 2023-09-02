@@ -1,5 +1,11 @@
 (function (ActionAppCore, $) {
 
+/**
+ * Code starting here is simple plumbing code used by the hosting environment
+ * 
+ * If you are reading this for the Websock / WebRTC details, 
+ *  you can clip from here until the next like message.
+ */
   var SiteMod = ActionAppCore.module("site");
 
   //~thisPageSpecs//~
@@ -62,8 +68,15 @@
     ThisPage.initOnFirstLoad().then(
       function () {
         //~_onFirstLoad//~
-        ThisPageNow = ThisPage;
 
+/**
+ * This is the code runs when the page (website in this case) first opens
+ * 
+ * Note: ThisPage is a global object (in this code bubble) with functionality for this "page" in the single page application
+ *  
+ */
+
+        ThisPageNow = ThisPage;
 
 
         function setMeetingStatus(theStatus) {
@@ -119,18 +132,10 @@
 
         }
 
-
-
-
-
-
-
-
         ThisPage.common.params = new URLSearchParams(document.location.search);
         ThisPage.common.targetHost = ThisPage.common.params.get('host') || '';
 
         ThisPage.subscribe('NewMediaSources', refreshMediaSourceLists);
-
 
         ThisPage.localVideo = ThisPage.getAppUse('local-video');
         ThisPage.localVideo.addEventListener("canplay", onLocalVideoPlay);
@@ -160,6 +165,14 @@
 
   //------- --------  --------  --------  --------  --------  --------  -------- 
   //~YourPageCode//~
+
+/**
+ * This is the general page code / functions / variables 
+ * 
+ * Note: No action should be taken in this area, that happens in the initial setup routine above
+ *  
+ */
+  
   //=== UI CONTROL ==========================================================================
   ThisPage.common.role = '';
   ThisPage.mediaInfo = {};
