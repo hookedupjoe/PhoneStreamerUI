@@ -206,20 +206,7 @@
     //--- a handey place for device media info
     ThisPage.mediaInfo = {};
   
-    ThisPage.getAppUse = function (theUse, the$Flag) {
-      var tmpEl = ThisPage.getByAttr$({
-        appuse: theUse
-      });
-      if (!(tmpEl && tmpEl.length > 0)) {
-        return false;
-      }
-      if (the$Flag) {
-        return tmpEl
-      }
-      return tmpEl.get(0);
-    }
 
-  
   /**
    * The below code closes any active tracks to make the video in use close and stop showing as
    *   being in use by the browser and makes it available again.
