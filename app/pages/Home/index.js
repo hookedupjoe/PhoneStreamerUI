@@ -98,7 +98,7 @@
    * 
    * If you want a turn server, you can get a 50 gig free account here, with details on how to setup and use it.
    *   https://www.metered.ca/tools/openrelay/  
-   *   (no, I am not affilicated with them, but the link and STUN server got me over the hump)
+   *   (no, I am not affiliated with them, but the link and STUN server got me over the hump)
    *  
    */
           ThisPage.activePeer = new RTCPeerConnection({
