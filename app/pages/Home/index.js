@@ -206,10 +206,23 @@
     //--- a handey place for device media info
     ThisPage.mediaInfo = {};
   
+    ThisPage.getAppUse = function (theUse, the$Flag) {
+      var tmpEl = ThisPage.getByAttr$({
+        appuse: theUse
+      });
+      if (!(tmpEl && tmpEl.length > 0)) {
+        return false;
+      }
+      if (the$Flag) {
+        return tmpEl
+      }
+      return tmpEl.get(0);
+    }
+
   
   /**
    * The below code closes any active tracks to make the video in use close and stop showing as
-   *   being in use by the browser and makes it available avain.
+   *   being in use by the browser and makes it available again.
    */
     ThisPage.closeVideo = function () {
       if (ThisPage.localVideo.srcObject) {
@@ -290,7 +303,7 @@
   
    /**
    * The below code is just UI stuff ... nothing to see here ...
-   * Feel free to ignore from here ================================================================
+   * Feel free to ignore from here to where you see more comments start again ...
    */
     function gotoStage(theStage) {
       var tmpStage = theStage || 'start';
@@ -448,24 +461,6 @@
    */
   
     //=== MEDIA ==========================================================================
-  
-   /**
-   * OK - no so interesting but while we are here, this returns the (yea jQuery) or native
-   *   element that is scoped within this page only.  This is a single page app, hence the
-   *   need for scoping.  This uses attributes as the key way to find elements in the DOM.
-   */
-   ThisPage.getAppUse = function (theUse, the$Flag) {
-      var tmpEl = ThisPage.getByAttr$({
-        appuse: theUse
-      });
-      if (!(tmpEl && tmpEl.length > 0)) {
-        return false;
-      }
-      if (the$Flag) {
-        return tmpEl
-      }
-      return tmpEl.get(0);
-    }
   
    /**
    * This code is used to prompt the user to give permission to use video or audio devices. 
