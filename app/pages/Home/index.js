@@ -807,8 +807,8 @@
       var tmpEl = ThisPageNow.getSpot('qr-code-host').get(0);
       var tmpURL = location.href + '?host=' + ThisPage.connections.userid;
       new QRCode(tmpEl, tmpURL);
-      ThisPage.addToSpot('qr-code-host', '<br /><a target="_blank" href="' + tmpURL + '">tmpURL</a>');
-      ThisPage.addToSpot('qr-code-host', '<br /><input readonly="true" value="' + tmpURL + '" />');
+      ThisPage.addToSpot('qr-code-host', '<br /><a target="_blank" href="' + tmpURL + '">' + tmpURL + '</a>');
+      ThisPage.addToSpot('qr-code-host', '<br /><input style="width:90%;" readonly="true" value="' + tmpURL + '" />');
     }
   
     actions.refreshPeople = refreshPeople;
