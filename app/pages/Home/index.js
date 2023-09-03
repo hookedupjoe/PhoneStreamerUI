@@ -166,6 +166,7 @@
   
           ThisPage.localVideo = ThisPage.getAppUse('local-video');
           ThisPage.localVideo.addEventListener("canplay", onLocalVideoPlay);
+          ThisPage.localVideo$ = $(ThisPage.localVideo)
 
           ThisPage.remoteVideo = ThisPage.getAppUse('remote-video');
           ThisPage.remoteVideo.addEventListener("canplay", onRemoteVideoPlay);
