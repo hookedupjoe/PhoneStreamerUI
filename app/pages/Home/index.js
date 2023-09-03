@@ -166,7 +166,10 @@
   
           ThisPage.localVideo = ThisPage.getAppUse('local-video');
           ThisPage.localVideo.addEventListener("canplay", onLocalVideoPlay);
-          
+
+          ThisPage.remoteVideo = ThisPage.getAppUse('remote-video');
+          ThisPage.remoteVideo.addEventListener("canplay", onRemoteVideoPlay);
+
           ThisPage.showOnHost = ThisPage.getAppUse('startHost',true);
           ThisPage.showOnStream = ThisPage.getAppUse('startStream',true);
   
@@ -237,6 +240,15 @@
         item: 'live', group: 'streamtabs'
       });
     }
+
+    function onRemoteVideoPlay() {
+      console.log('onRemoteVideoPlay')
+      //--- We are hosting and have a stream
+      ThisPage.showSubPage({
+        item: 'live', group: 'hosttabs'
+      });
+    }
+    
   
   
     actions.cancelHosting = cancelHosting;
@@ -394,7 +406,7 @@
   
       var tmpHostStatus = '<div class="ui message compact">Looking for host ...</div>';
       if (ThisPage.common.targetHostFound) {
-        tmpHostStatus = '<div class="ui message compact green">Host Ready</div>';
+        tmpHostStatus = '<div class="ui message compact green pad8">Host Ready</div>';
       }
   
       ThisPage.loadSpot('host-status', tmpHostStatus);
@@ -809,7 +821,7 @@
    * Create the URL
    */
     function updateQRCode() {
-      ThisPage.loadSpot('qr-code-host', '<div class="ui header small blue mar10 pad5">Quick Access QR Code</div>');
+      ThisPage.loadSpot('qr-code-host', '');
       var tmpEl = ThisPageNow.getSpot('qr-code-host').get(0);
       var tmpURL = location.href + '?host=' + ThisPage.connections.userid;
       new QRCode(tmpEl, tmpURL);

@@ -3,11 +3,13 @@
 
   <div appuse="cards" group="maintabs" item="start">
     <!--=========== START ========================================================================================-->
-    <div class="ui header blue center aligned">
+    <div appuse="startHost" class="ui header  top attached">
       Phone Streamer
     </div>
-    <div appuse="startHost" class="ui header  top attached">
-      Use the button below, it will show a QR code to connect your phone.
+    <div class="ui segment attached pad8">
+      <b>Step 1:</b> On the computer that will receive the video, click <b>Host Streamer</b> and a QR Code / link will appear.
+      <div class="ui pad5"></div>
+      <b>Step 2:</b> On the device or browser that will stream a camera, use the QR Code or link provided and follow the instructions.
     </div>
     <div class="ui segment attached pad8">
       <div appuse="startHost">
@@ -36,6 +38,14 @@
         <button pageaction="restart" class="ui button basic">Cancel</button>
       </div>
     </div>
+    <div appuse="cards" group="hosttabs" item="live">
+      <div class="ui segment basic pad5 mar3 left aligned">
+        <video style="max-width:640px;width:100%;height:auto;" autoplay playsInline="true" class="remote-video" appuse="remote-video"></video>
+        <canvas style="display:none;width:99%;height:auto;background-repeat: no-repeat;" appuse="remote-canvas" width="640" height="480"></canvas>
+      </div>
+      <button pageaction="restart" class="ui button basic">Cancel</button>
+
+    </div>
     <div appuse="cards" group="hosttabs" item="ready" class="hidden">
       <div class="ui message">
         <div>
@@ -51,92 +61,91 @@
     <div appuse="cards" group="hosttabs" item="hosting" class="hidden">
       <div class="ui message">
         <div>
-          <i class="icon podcast large green"></i>Use the QR Code to connect your mobile device camera.  Use the link to connect another browser.
+
+          <div class="ui header small green">
+            Ready to host a stream
+          </div>
           <div class="ui pad5"></div>
-          <b>On the streaming device ...</b>
-          <ul>
-            <li>Use the QR Code or link to open this page, it will show </li>
-            <li>Enter a device name</li>
-            <li>Select Camera (i.e. Front / Back)</li>
-            <li>Click the Start Streaming button.</li>
-            <li>Once connected, the video will show here</li>
-          </ul>
+          <div class="ui larger">
+            <i class="icon podcast large green"></i>On the streaming device ...
+          </div>
+          <ul class="pad8 mar0">
+            <li><b>Use the QR Code or link below</b> to connect to this page
+              <li>Enter a name, select the camera and connect</li>
+              <li>Once connected, the video will show here</li>
+            </ul>
+
+          </div>
+          <div class="ui pad5"></div>
+          <div pagespot="qr-code-host"></div>
+          <div class="ui pad5"></div>
+          <button pageaction="cancelHosting" class="ui button basic compact">Cancel Hosting</button>
 
         </div>
-        <div class="ui pad5"></div>
-        <button pageaction="cancelHosting" class="ui button basic compact">Cancel</button>
-        <div pagespot="qr-code-host"></div>
-
-      </div>
-    </div>
-  </div>
-
-  <div appuse="cards" group="maintabs" item="streamstart" class="hidden">
-    <!--=========== STREAM ========================================================================================-->
-    <div class="ui header top attached">
-      <div>
-        <i class="icon green podcast large"></i> Stream This Device
-      </div>
-      <div class="pad5"></div>
-      <div pagespot="host-status"></div>
-    </div>
-
-    <div appuse="cards" group="streamtabs" item="start">
-      <div class="ui segment bottom attached">
-        <button class="ui button green" pageaction="setDeviceName">
-          Set Device Name
-        </button>
-        
       </div>
     </div>
 
-    <div appuse="cards" group="streamtabs" item="selectaudio" class="hidden">
-      <div pagespot="audio-sources"></div>
-    </div>
-    <div appuse="cards" group="streamtabs" item="live" class="hidden">
-      <button appuse="startStreaming" class="ui button green large" pageaction="startStreaming">
-        Start Streaming
-      </button>
-      <button pageaction="closeVideo" class="ui button basic">Cancel</button>
-      <br />
-      <video style="max-width:380px;width:100%;padding:0;margin:3px;height:auto;border:none;" autoplay="" muted="" playsInline="true" appuse="local-video"></video>
-    </div>
-
-    <div appuse="cards" group="streamtabs" item="select" class="hidden">
-
-      <div class="ui message">
-        <div class="ui larger pad5 mar3">
-          Device Name: <span class="bolder" pagespot="streamname"></span>
+    <div appuse="cards" group="maintabs" item="streamstart" class="hidden">
+      <!--=========== STREAM ========================================================================================-->
+      <div class="ui header top attached">
+        <div>
+          <i class="icon green podcast large"></i> Stream This Device
         </div>
+        <div class="pad5"></div>
+        <div pagespot="host-status"></div>
+      </div>
 
-        <div appuse="showcameras">
-          <button pageaction="setDeviceName" class="ui button basic">Change Name</button>
-          <button pageaction="restart" class="ui button basic">Cancel</button>
-          <div class="ui pad5"></div>
-          <button class="ui button basic blue" pageaction="refreshVideoSources">
-            Refresh Available Cameras
+      <div appuse="cards" group="streamtabs" item="start">
+        <div class="ui segment bottom attached">
+          <button class="ui button green" pageaction="setDeviceName">
+            Set Device Name
           </button>
-          <div class="ui pad5"></div>
+
+        </div>
+      </div>
+
+      <div appuse="cards" group="streamtabs" item="selectaudio" class="hidden">
+        <div pagespot="audio-sources"></div>
+      </div>
+      <div appuse="cards" group="streamtabs" item="live" class="hidden">
+        <button appuse="startStreaming" class="ui button green large" pageaction="startStreaming">
+          Start Streaming
+        </button>
+        <button pageaction="closeVideo" class="ui button basic">Cancel</button>
+        <br />
+        <video style="max-width:380px;width:100%;padding:0;margin:3px;height:auto;border:none;" autoplay="" muted="" playsInline="true" appuse="local-video"></video>
+      </div>
+
+      <div appuse="cards" group="streamtabs" item="select" class="hidden">
+
+        <div class="ui message">
+          <div class="ui larger pad5 mar3">
+            Device Name: <span class="bolder" pagespot="streamname"></span>
+          </div>
+
+          <div appuse="showcameras">
+            <button pageaction="setDeviceName" class="ui button basic">Change Name</button>
+            <button pageaction="restart" class="ui button basic">Cancel</button>
+            <div class="ui pad5"></div>
+            <button class="ui button basic blue" pageaction="refreshVideoSources">
+              Refresh Available Cameras
+            </button>
+            <div class="ui pad5"></div>
+          </div>
+
+          <div pagespot="video-sources"></div>
+
         </div>
 
-        <div pagespot="video-sources"></div>
 
       </div>
-
-
-    </div>
-    <div appuse="cards" group="streamtabs" item="ready" class="hidden">
-      <div class="ui message">
-        <span class="bolder" pagespot="streamname">YOURNAME</span> you are ready to stream.
+      <div appuse="cards" group="streamtabs" item="ready" class="hidden">
+        <div class="ui message">
+          <span class="bolder" pagespot="streamname">YOURNAME</span> you are ready to stream.
+        </div>
       </div>
     </div>
+
+
+
   </div>
-
-
-
-</div>
-
-<div class="ui segment basic pad5 mar3 center aligned">
-  <video style="max-width:640px;width:100%;height:auto;" autoplay playsInline="true" class="remote-video" appuse="remote-video"></video>
-  <canvas style="width:99%;height:auto;background-repeat: no-repeat;" appuse="remote-canvas" width="640" height="480"></canvas>
-</div>
