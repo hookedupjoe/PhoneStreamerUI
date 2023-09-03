@@ -256,6 +256,7 @@
         tmpLV.css('aspect-ratio',''+tmpW + '/' + tmpH);
         tmpLV.css('width','100%');
         tmpLV.css('height','auto');
+        ThisApp.refreshLayouts();
       }
 
 
