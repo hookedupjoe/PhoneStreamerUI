@@ -253,7 +253,7 @@
         }
         console.log('video track - tmpW,tmpH:',tmpW,tmpH);
         var tmpLV = $(ThisPage.localVideo);
-        tmpLV.css('aspect-ratio',''+tmpW + '/' + tmpH);
+        tmpLV.css('aspect-ratio',''+tmpW + '/' + tmpH + ' auto');
         tmpLV.css('width','100%');
         tmpLV.css('height','auto');
         ThisApp.refreshLayouts();
