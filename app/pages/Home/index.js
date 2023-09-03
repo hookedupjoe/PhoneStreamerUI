@@ -252,7 +252,6 @@
             }
           }
         }
-        console.log('video track - tmpW,tmpH:',tmpW,tmpH);
         var tmpLV = $(ThisPage.localVideo);
         tmpLV.css('aspect-ratio',''+tmpW + '/' + tmpH + ' auto');
         tmpLV.css('width','100%');
@@ -267,7 +266,6 @@
     }
 
     function onRemoteVideoPlay() {
-      console.log('onRemoteVideoPlay')
       //--- We are hosting and have a stream
       ThisPage.showSubPage({
         item: 'live', group: 'hosttabs'
@@ -283,7 +281,6 @@
     }
     actions.startHosting = startHosting;
     function startHosting() {
-      console.log('startHosting');
       setRole('host');
       updateHostName('Host');
     }
