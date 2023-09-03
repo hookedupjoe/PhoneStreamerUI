@@ -587,11 +587,7 @@
    */
   actions.selectVideoSource = selectVideoSource;
     function selectVideoSource(theParams, theTarget) {
-      var tmpParams = ThisApp.getActionParams(theParams,
-        theTarget,
-        ['deviceId',
-          'label']);
-  
+      var tmpParams = ThisApp.getActionParams(theParams,theTarget,['deviceId','label']);
   
       ThisApp.currentVideoDeviceID = tmpParams.deviceId;
   
@@ -854,9 +850,13 @@
       ThisPage.addToSpot('qr-code-host', '<br /><input style="width:90%;" readonly="true" value="' + tmpURL + '" />');
     }
   
+
+  /**
+   * When we get the list of people from server, check to see if we are on the list and/or the desired host is on the list
+   */
     actions.refreshPeople = refreshPeople;
     function refreshPeople(thePeople) {
-      console.log('refreshPeople',thePeople)
+      
       ThisPage.connections.people = thePeople;
   
       ThisPage.common.targetHostFound = (ThisPage.common.targetHost && ThisPage.connections.people[ThisPage.common.targetHost]);
@@ -879,6 +879,12 @@
     }
   
   
+   /**
+   * The Winsock server just told us there is a meeting request.  Prompt to connect then
+   *    do the WebRTC process to create a response accordingly.
+   * 
+   * This is where the process of creating an answer to an offer is done
+   */
     function onMeetingRequst(theMsg) {
   
       var tmpTitle = 'Steam Request from ' + theMsg.fromname
@@ -927,6 +933,11 @@
   
     }
   
+   /**
+   * The Winsock server just told us there is a reply to a meeting request.  
+   * 
+   * This is where the process of doing a reply meeting request back if needed is done
+   */
     function onMeetingResponse(theMsg) {
       var self = ThisPage;
   
@@ -960,7 +971,11 @@
     }
   
   
-  
+  /**
+   * Tell the Winsock server we exist
+   * 
+   * If we have a saved initial userid and optional name saved, send that information
+   */
     actions.sendProfile = sendProfile;
     function sendProfile() {
       if (!ThisPage.wsclient) return;
@@ -970,6 +985,11 @@
       }))
     }
   
+   /**
+   * Tell the Winsock server we are the streamer and we want to stream to the host by requesting a "meeting"
+   * 
+   * If the host is not longer availble - say so
+   */
     actions.startStreaming = startStreaming;
     function startStreaming() {
       if (ThisPage.common.targetHost && ThisPage.common.targetHostFound) {
@@ -977,11 +997,16 @@
           userid: ThisPage.common.targetHost
         })
       } else {
-        alert('we can not do that Dave', "Sad Face")
+        alert('Host was not found, refresh on the host side and try again', "Host Not Found")
       }
   
     }
   
+   /**
+   * Tell the Winsock server we want to request a meeting (either initially or as a reply connection)
+   * 
+   * If the peer offer is created and send to the websocket server for action
+   */
     actions.requestMeeting = requestMeeting;
     function requestMeeting(theParams, theTarget) {
       //ThisPage.isAlreadyCalling = true;
