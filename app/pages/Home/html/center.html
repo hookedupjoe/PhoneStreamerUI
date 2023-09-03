@@ -6,16 +6,16 @@
     <div class="ui header blue center aligned">
       Phone Streamer
     </div>
-    <div class="ui header  top attached">
-      How it works
+    <div appuse="startHost" class="ui header  top attached">
+      Use the button below, it will show a QR code to connect your phone.
     </div>
     <div class="ui segment attached pad8">
-      <i class="icon computer large blue"></i>On your computer, click <b>Host Streamer</b>. Enter a display name and <b>Start Hosting</b>.
+      <div appuse="startHost">
+        <i class="icon computer large blue"></i>Click <b>Host Streamer</b> to get started.
+      </div>
       <div class="ui pad5"></div>
-      <i class="icon podcast large green"></i>On the straming device, enter a device name, select the camera and find the host to connect to. Click the <b>Connect</b> button to stream to the host peer to peer.
-      <div class="ui pad5"></div>
-        <button pageaction="openHostUI" class="ui button blue">Host Streamer</button>
-        <button pageaction="openStreamUI" class="ui button green">Setup Stream Device</button>
+      <button appuse="startHost" pageaction="openHostUI" class="ui button blue hidden">Host Streamer</button>
+      <button appuse="startStream" pageaction="openStreamUI" class="ui button green hidden">Setup Stream Device</button>
     </div>
   </div>
 
@@ -39,7 +39,7 @@
     <div appuse="cards" group="hosttabs" item="ready" class="hidden">
       <div class="ui message">
         <div>
-          <span class="bolder" pagespot="hostname">YOURNAME</span> you are ready to host.
+          You are ready to host.
         </div>
         <div class="ui pad5"></div>
         <button pageaction="setHostName" class="ui button basic compact">Change Name</button>
@@ -51,11 +51,22 @@
     <div appuse="cards" group="hosttabs" item="hosting" class="hidden">
       <div class="ui message">
         <div>
-          <span class="bolder" pagespot="hostname">YOURNAME</span> you are available to host a streaming device.
+          <i class="icon podcast large green"></i>Use the QR Code to connect your mobile device camera.  Use the link to connect another browser.
+          <div class="ui pad5"></div>
+          <b>On the streaming device ...</b>
+          <ul>
+            <li>Use the QR Code or link to open this page, it will show </li>
+            <li>Enter a device name</li>
+            <li>Select Camera (i.e. Front / Back)</li>
+            <li>Click the Start Streaming button.</li>
+            <li>Once connected, the video will show here</li>
+          </ul>
+
         </div>
         <div class="ui pad5"></div>
         <button pageaction="cancelHosting" class="ui button basic compact">Cancel</button>
         <div pagespot="qr-code-host"></div>
+
       </div>
     </div>
   </div>
@@ -63,22 +74,19 @@
   <div appuse="cards" group="maintabs" item="streamstart" class="hidden">
     <!--=========== STREAM ========================================================================================-->
     <div class="ui header top attached">
-      <div class="toleft">
-        <i class="icon green mobile"></i> Stream Device
+      <div>
+        <i class="icon green podcast large"></i> Stream This Device
       </div>
-      <div class="toright" pagespot="host-status">
-        
-      </div>
-      <div class="clearboth"></div>
+      <div class="pad5"></div>
+      <div pagespot="host-status"></div>
     </div>
-      
 
     <div appuse="cards" group="streamtabs" item="start">
       <div class="ui segment bottom attached">
         <button class="ui button green" pageaction="setDeviceName">
           Set Device Name
         </button>
-        <button pageaction="restart" class="ui button basic">Cancel</button>
+        
       </div>
     </div>
 

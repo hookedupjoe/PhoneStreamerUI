@@ -79,7 +79,9 @@
    */
   
           ThisPageNow = ThisPage;
-  
+          
+          //--- Use default host name, not needed for hosting side, but used as name for profile
+          updateHostName('Host');
   
           function setMeetingStatus(theStatus) {
             var tmpIsOpen = (theStatus == 'open');
@@ -158,13 +160,15 @@
    * The below code checks to see if the unique ID of the list is passed and saves it
    */
           ThisPage.common.params = new URLSearchParams(document.location.search);
-          ThisPage.common.targetHost = ThisPage.common.params.get('host') || '';
-  
+          ThisPage.common.targetHost = ThisPage.common.params.get('host') || '';          
+          
           ThisPage.subscribe('NewMediaSources', refreshMediaSourceLists);
   
           ThisPage.localVideo = ThisPage.getAppUse('local-video');
           ThisPage.localVideo.addEventListener("canplay", onLocalVideoPlay);
-  
+          
+          ThisPage.showOnHost = ThisPage.getAppUse('startHost',true);
+          ThisPage.showOnStream = ThisPage.getAppUse('startStream',true);
   
           initUI();
   
@@ -237,11 +241,14 @@
   
     actions.cancelHosting = cancelHosting;
     function cancelHosting() {
-      restart();
+      gotoStage('start');
+      setRole('');
     }
     actions.startHosting = startHosting;
     function startHosting() {
-      sendProfile();
+      console.log('startHosting');
+      setRole('host');
+      updateHostName('Host');
     }
   
    /**
@@ -329,7 +336,7 @@
     function openHostUI() {
       setRole('host');
       gotoStage('hoststart');
-      refreshUI();
+      startHosting();
     }
   
     function initUI() {
@@ -337,18 +344,22 @@
       var tmpHostname = sessionStorage.getItem('hostdispname') || '';
       var tmpDevicename = sessionStorage.getItem('devicedispname') || '';
       var tmpLastRole = sessionStorage.getItem('lastrole') || ThisPage.common.role;
+
+      var tmpTargetHost = ThisPage.common.targetHost || '';
+
+
   
       if (tmpDevicename) {
         //ThisPage.loadSpot('streamname', tmpDevicename);
         updateDeviceName(tmpDevicename);
-      }
-      if (tmpHostname) {
+      } else if (tmpHostname) {
         //ThisPage.loadSpot('hostname', tmpHostname);
         updateHostName(tmpHostname);
       }
   
       if ((tmpLastRole)) {
         ThisPage.common.role = tmpLastRole;
+
         if (tmpLastRole == 'host' && (tmpHostname)) {
           //ThisPage.common.displayName = tmpHostname;
           gotoStage('hoststart');
@@ -359,6 +370,21 @@
   
       }
   
+      
+      if( tmpTargetHost ){
+        //--- Looking for a target host, show button for streaming device
+        ThisPage.showOnStream.removeClass('hidden');
+        ThisPage.showOnHost.addClass('hidden');
+        openStreamUI();
+      } else {
+        //--- Hosting, show get started button
+        ThisPage.showOnStream.addClass('hidden');
+        ThisPage.showOnHost.removeClass('hidden');
+
+      }
+     
+      
+
       refreshUI();
     }
   
@@ -366,11 +392,9 @@
       var tmpIsActive = (ThisPage.common.role || '');
       var tmpIsHosting = ThisPage.common.role == 'host';
   
-      var tmpHostStatus = '';
+      var tmpHostStatus = '<div class="ui message compact">Looking for host ...</div>';
       if (ThisPage.common.targetHostFound) {
-        tmpHostStatus = `<div class="pad5 mar5" style="border:dashed 1px red;">
-      Host Ready
-      </div>`
+        tmpHostStatus = '<div class="ui message compact green">Host Ready</div>';
       }
   
       ThisPage.loadSpot('host-status', tmpHostStatus);
@@ -384,7 +408,7 @@
       if (tmpIsHosting) {
         tmpName = ThisPage.common.hostDispName || '';
         if (tmpIsActive) {
-          ThisPage.loadSpot('hostname', tmpName);
+          //ThisPage.loadSpot('hostname', tmpName);
           if (tmpName) {
             if (ThisPage.connections.hostingActive) {
               ThisPage.showSubPage({
@@ -795,6 +819,7 @@
   
     actions.refreshPeople = refreshPeople;
     function refreshPeople(thePeople) {
+      console.log('refreshPeople',thePeople)
       ThisPage.connections.people = thePeople;
   
       ThisPage.common.targetHostFound = (ThisPage.common.targetHost && ThisPage.connections.people[ThisPage.common.targetHost]);
@@ -819,8 +844,8 @@
   
     function onMeetingRequst(theMsg) {
   
-      var tmpTitle = 'Meeting Request from ' + theMsg.fromname
-      var tmpMsg = 'Do you want to join a meeting with ' + theMsg.fromname + '?'
+      var tmpTitle = 'Steam Request from ' + theMsg.fromname
+      var tmpMsg = 'Do you want to accept a stream from ' + theMsg.fromname + '?'
       var self = ThisPage;
   
       var tmpConfirm = true;
