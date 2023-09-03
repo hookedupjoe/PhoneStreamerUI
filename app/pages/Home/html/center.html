@@ -1,3 +1,5 @@
+
+
 <div class="ui segment basic pad3 mar3">
 
 
@@ -40,8 +42,8 @@
     </div>
     <div appuse="cards" group="hosttabs" item="live">
       <div class="ui segment basic pad5 mar3 left aligned">
-        <video style="max-width:640px;width:100%;height:auto;" autoplay playsInline="true" class="remote-video" appuse="remote-video"></video>
-        <canvas style="display:none;width:99%;height:auto;background-repeat: no-repeat;" appuse="remote-canvas" width="640" height="480"></canvas>
+        <video style="width:100%;height:auto;" autoplay playsInline="true" class="remote-video" appuse="remote-video"></video>
+        <canvas style="display:none;width:99%;height:auto;background-repeat: no-repeat;" appuse="remote-canvas"></canvas>
       </div>
       <button pageaction="restart" class="ui button basic">Cancel</button>
 
@@ -113,7 +115,7 @@
         </button>
         <button pageaction="closeVideo" class="ui button basic">Cancel</button>
         <br />
-        <video style="max-width:380px;width:100%;padding:0;margin:3px;height:auto;border:none;" autoplay="" muted="" playsInline="true" appuse="local-video"></video>
+        <video style="padding:0;margin:3px;height:auto;border:none;" autoplay="" muted="" playsInline="true" appuse="local-video"></video>
       </div>
 
       <div appuse="cards" group="streamtabs" item="select" class="hidden">

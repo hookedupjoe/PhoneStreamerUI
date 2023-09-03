@@ -236,6 +236,29 @@
    */
     function onLocalVideoPlay() {
       //--- We are streaming
+      
+      if( ThisPage.localVideo && ThisPage.localVideo.srcObject ){
+        var tmpTracks = ThisPage.localVideo.srcObject.getTracks();
+        var tmpW = 640;
+        var tmpH = 480;
+        for( var iPos in tmpTracks){
+          var tmpTrack = tmpTracks[iPos];
+          if(tmpTrack.kind == 'video'){
+            var tmpCaps = tmpTrack.getCapabilities();
+            if( tmpCaps && tmpCaps.width){
+              tmpW = tmpCaps.width.max;
+              tmpH = tmpCaps.height.max;
+            }
+          }
+        }
+        console.log('video track - tmpW,tmpH:',tmpW,tmpH);
+        var tmpLV = $(ThisPage.localVideo);
+        tmpLV.css('aspect-ratio',''+tmpW + '/' + tmpH);
+        tmpLV.css('width','100%');
+        tmpLV.css('height','auto');
+      }
+
+
       ThisPage.showSubPage({
         item: 'live', group: 'streamtabs'
       });
