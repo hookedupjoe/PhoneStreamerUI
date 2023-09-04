@@ -42,7 +42,8 @@
     </div>
     <div appuse="cards" group="hosttabs" item="live">
       <div class="ui segment basic pad5 mar3 left aligned">
-        <video style="width:100%;height:auto;" autoplay playsInline="true" class="remote-video" appuse="remote-video"></video>
+        <!--<video style="width:100%;height:auto;" autoplay playsInline="true" class="remote-video" appuse="remote-video"></video>-->
+        <video style="max-width:500px;aspect-ratio:16.9/9 auto;padding:0;margin:3px;height:auto;border:none;" autoplay="" muted="" playsInline="true" appuse="remote-video"></video>
         <canvas style="display:none;width:99%;height:auto;background-repeat: no-repeat;" appuse="remote-canvas"></canvas>
       </div>
       <button pageaction="restart" class="ui button basic">Cancel</button>
